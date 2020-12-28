@@ -1,0 +1,12 @@
+#confidecial! - for debugging purposes
+
+@app.route('/flag')
+def flag():
+    try:
+        cookie = request.cookies.get('cookie')
+        if cookie == admin.cookie_value:
+            return render_template('flag.html', flag=admin.flag)
+    except Exception as e:
+        print(e)
+
+    return redirect(url_for('home'))
