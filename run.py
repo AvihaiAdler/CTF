@@ -11,22 +11,25 @@ from flask import (
 )
 from songs import Songs
 from forms import LoginForm, SearchBar
-import threading
-from listener import listen
 import json
 
+
+class Secrets:
+    def __init__(self):
+        with open('config.json') as f:
+            content = json.load(f)
+        self.username = content['username']
+        self.password = content['password']
+        self.search_string = content['search_string']
+        self.flag = content['flag']
+        self.cookie_value = content['cookie']
+        self.default_cookie = 'vanilla'
+
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret key'
+app.config['SECRET_KEY'] = '4fb8dac4d9aa0e70d016bccc9a2a17d9c5ff161809f11ecfd79d751b446d0f0c'
 data = Songs()
-
-with open('config.json') as f:
-    content = json.load(f)
-
-
-class Admin:
-    username = content['username']
-    password = content['password']
-    search_string = content['search_string']
+admin = Secrets()
 
 
 @app.route('/', methods=['GET', 'POST'])     # root
@@ -37,14 +40,16 @@ def login():
     session['logged_in'] = False
 
     if request.method == 'POST' and form.validate_on_submit():
-        if form.password.data == Admin.password and form.username.data == Admin.username:
+        if form.password.data == admin.password and form.username.data == admin.username:
             session['logged_in'] = True
             flash('There must be something hidden here, better check that search bar', 'success')
             return redirect(url_for('home'))
         else:
             flash('Access denied. Sniff it out!', 'danger')
-            response.headers.add('Username', Admin.username)
-            response.headers.add('Password', Admin.password)
+            response.headers.add('Username', admin.username)
+            response.headers.add('Password', admin.password)
+
+    response.set_cookie('cookie', admin.default_cookie)
     response.data = render_template('login.html', title='Login', form=form)
     return response
 
@@ -57,19 +62,31 @@ def home():
     form = SearchBar()
     if request.method == 'POST':
 
-        if form.search_string.data == Admin.search_string:
+        if form.search_string.data == admin.search_string:
             return send_file("challenge_4.wav", mimetype="audio/wav", as_attachment=True)
 
         data.get_search_result(form.search_string.data)
     return render_template('home.html', posts=data.get_list(), title='Home', form=form)
 
 
-if __name__ == '__main__':
-    #   launching 2 threads. 1 for the socket & 1 for the app
-    threading.Thread(target=listen).start()
-    threading.Thread(target=app.run).start()
-    # app.run(debug=True)   # can't use debug mode when using thread. debug uses the reloader which expect the app to run in the main thread
+@app.route('/flag')
+def flag():
+    if not session['logged_in']:
+        return redirect(url_for('login'))
 
+    try:
+        cookie = request.cookies.get('cookie')
+        print(cookie)
+        if cookie == admin.cookie_value:
+            return render_template('flag.html', flag=admin.flag)
+    except Exception as e:
+        print(e)
+
+    return redirect(url_for('home'))
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 
