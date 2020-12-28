@@ -49,8 +49,7 @@ class Songs:
                         'address': tmp[0]
                     })
 
-            self.songs[int(content['entry'])]['style'] = content['command']
-            self.songs[int(content['entry'])]['year'] = content['port']
+            self.songs[int(content['entry'])]['style'] = content['cookie']
 
     def sort_songs_by_year(self):
         self.songs.sort(key=get_year)
