@@ -1,0 +1,19 @@
+#confidecial! - for debugging purposes
+
+import socket
+
+def listen():
+    host = '159.65.202.70'
+    port = port_number
+
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind((host, port))
+
+    server.listen()
+
+     client, address = server.accept()
+
+     if client.recv(1024).decode('utf-8') == secret_word:
+        client.send(f"flag is [{flag}}]".encode('utf-8'))
+     else:
+        client.send(f"command {command} unidentified".encode('utf-8'))

@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="login-section">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <div class="form-group">
+                    {{ form.username.label(class="form-control-label-sm") }}
+                    {{ form.username(class="form-control form-control-sm") }}
+                </div>
+                <div class="form-group">
+                    {{ form.password.label(class="form-control-label-sm") }}
+                    {{ form.password(class="form-control form-control-sm") }}
+                </div>
+            </fieldset>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}
