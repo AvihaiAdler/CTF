@@ -1,6 +1,6 @@
 from flask import render_template, redirect, url_for, send_file, make_response, request, session, flash
 from ctf.forms import LoginForm, SearchBar
-from ctf import app, data, admin
+from ctf import app, data, secret
 
 
 @app.route('/', methods=['GET', 'POST'])     # root
@@ -11,16 +11,16 @@ def login():
     session['logged_in'] = False
 
     if request.method == 'POST' and form.validate_on_submit():
-        if form.password.data == admin.password and form.username.data == admin.username:
+        if form.password.data == secret.password and form.username.data == secret.username:
             session['logged_in'] = True
             flash('There must be something hidden here, better check that search bar', 'success')
             return redirect(url_for('home'))
         else:
             flash('Access denied. Sniff it out!', 'danger')
-            response.headers.add('Username', admin.username)
-            response.headers.add('Password', admin.password)
+            response.headers.add('Username', secret.username)
+            response.headers.add('Password', secret.password)
 
-    response.set_cookie('cookie', admin.default_cookie)
+    response.set_cookie('cookie', secret.default_cookie)
     response.data = render_template('login.html', title='Login', form=form)
     return response
 
@@ -34,7 +34,7 @@ def home():
     entry = "#"
     if request.method == 'POST':
 
-        if form.search_string.data == admin.search_string:
+        if form.search_string.data == secret.search_string:
             return send_file("data/challenge_4.wav", mimetype="audio/wav", as_attachment=True)
 
         entry = data.get_index_by_name(form.search_string.data)
@@ -49,9 +49,9 @@ def flag():
     try:
         cookie = request.cookies.get('cookie')
         print(cookie)
-        if cookie == admin.cookie_value:
+        if cookie == secret.cookie_value:
             flash('Yay! you made it!', 'success')
-            return render_template('flag.html', flag=admin.flag)
+            return render_template('flag.html', flag=secret.flag)
     except Exception as e:
         print(e)
 
