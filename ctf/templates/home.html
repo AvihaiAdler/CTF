@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block searchbar %}
+<script> window.location.hash={{entry}}; </script>
 <div style="float:left"><h1>Home</h1></div>
 <div class="search-bar-section" >
     <form method="POST" action="">
@@ -20,7 +21,7 @@
         <article class="media content-section">
           <div class="media-body">
             <div class="entry-metadata">
-              <a id={{post.address}} class="mr-2" >{{ post.index }}</a>
+              <a name={{post.address}} class="mr-2" >{{ post.index }}</a>
               <small class="text-muted">{{ post.artist }}</small>
             </div>
             <h2><a class="entry-title">{{ post.song }}</a></h2>
