@@ -4,8 +4,8 @@
 def flag():
     try:
         cookie = request.cookies.get('cookie')
-        if cookie == admin.cookie_value:
-            return render_template('flag.html', flag=admin.flag)
+        if cookie == secret.cookie_value:
+            return render_template('flag.html', flag=secret.flag)
     except Exception as e:
         print(e)
 
