@@ -31,13 +31,14 @@ def home():
         return redirect(url_for('login'))
 
     form = SearchBar()
+    entry = "#"
     if request.method == 'POST':
 
         if form.search_string.data == admin.search_string:
             return send_file("data/challenge_4.wav", mimetype="audio/wav", as_attachment=True)
 
-        data.get_search_result(form.search_string.data)
-    return render_template('home.html', posts=data.get_list(), title='Home', form=form)
+        entry = data.get_index_by_name(form.search_string.data)
+    return render_template('home.html', posts=data.get_list(), entry=entry, title='Home', form=form)
 
 
 @app.route('/flag')
