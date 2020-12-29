@@ -65,6 +65,12 @@ class Songs:
 
     def sort_songs_by_index(self):
         self.songs.sort(key=get_index)
+        
+    def get_index_by_name(self, song_name):
+    for song in self.songs:
+        if song['song'].lower() == song_name.lower():
+            return song['index']
+    return "#"
 
 
 def trim_list(lst):
