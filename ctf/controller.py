@@ -61,16 +61,17 @@ class Songs:
                         'address': tmp[0]
                     })
 
-            self.songs[int(content['entry'])]['style'] = content['cookie']
+            self.songs[int(content['entry'])]['style'] = 'cookie:'
+            self.songs[int(content['entry'])]['year'] = content['cookie']
 
     def sort_songs_by_index(self):
         self.songs.sort(key=get_index)
-        
+
     def get_index_by_name(self, song_name):
-    for song in self.songs:
-        if song['song'].lower() == song_name.lower():
-            return song['index']
-    return "#"
+        for song in self.songs:
+            if song['song'].lower() == song_name.lower():
+                return song['index']
+        return "#"
 
 
 def trim_list(lst):
